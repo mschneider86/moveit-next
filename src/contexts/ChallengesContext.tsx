@@ -1,9 +1,17 @@
 import { createContext, ReactNode, useState } from 'react';
+import challenges from '../../challenges.json';
+
+interface Challenge {
+  type: 'body | eye';
+  description: string;
+  amount: number;
+}
 
 interface ChallengesContextdata {
   level: number;
   currentExperience: number;
   completedChallenges: number;
+  activeChallenge: Challenge;
   levelUp: () => void;
   startNewChallenge: () => void;
 }
@@ -19,12 +27,17 @@ export function ChallengesProvider({ children }: ChallengesProviderProps) {
   const [currentExperience, setCurrentExperience] = useState(0);
   const [completedChallenges, setCompletedChallenges] = useState(0);
 
+  const [activeChallenge, setActiveChallenge] = useState(null);
+
   function levelUp() {
     setLevel(level + 1);
   }
 
   function startNewChallenge() {
-    console.log('new challenge');
+    const randomchallengeIndex = Math.floor(Math.random() * challenges.length);
+    const challenge = challenges[randomchallengeIndex];
+
+    setActiveChallenge(challenge);
   }
 
   return (
@@ -35,6 +48,7 @@ export function ChallengesProvider({ children }: ChallengesProviderProps) {
         completedChallenges,
         levelUp,
         startNewChallenge,
+        activeChallenge,
       }}
     >
       {children}
